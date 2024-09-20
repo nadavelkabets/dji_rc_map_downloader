@@ -1,16 +1,19 @@
 # dji_rc_map_downloader
 A script to download and generate an offline map for DJI RC controller
 
+The offline map tiles are located at:
+```
+<sdcard_mount_dir>/DJI_RC/Android/data/dji.go.v5/files/DJI/tiles/
+```
 
-Data:
-https://data.maptiler.com/downloads
-It is possible to choose specific region
+The directory includes skippy map tiles in png format and a config.json index file
 
-Parse:
-https://github.com/alfanhui/mbtilesToPngs
-Read how to download in PNG format
+Skippy format:
+https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
 
-Format:
-DJI controller expects config.json in this format:
-`[{"latitudeNorth":32.10401267811626,"latitudeSouth":32.07950018521896,"longitudeEast":34.80357594482135,"longitudeWest":34.75961490703324,"maxZoom":17,"minZoom":1,"name":"TLV north","timestamp":1714180803938}]`
+
+Index file format:
+```
+[{"latitudeNorth":32.10401267811626,"latitudeSouth":32.07950018521896,"longitudeEast":34.80357594482135,"longitudeWest":34.75961490703324,"maxZoom":17,"minZoom":1,"name":"TLV north","timestamp":1714180803938}]
+```
 
