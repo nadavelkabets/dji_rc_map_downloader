@@ -19,9 +19,15 @@ def latlon_to_tile(lat, lon, zoom):
 def download_tile(tile_data):
     (xtile, ytile, zoom) = tile_data
 
-    url = f"https://us.djiservice.org/styles/osm-bright/{zoom}/{xtile}/{ytile}@2x.png"    
+    url = f"https://us.djiservice.org/styles/osm-bright/{zoom}/{xtile}/{ytile}@2x.png"
     output = f"tile-{zoom}-{xtile}-{ytile}.png"
-    print(urlretrieve(url, output))
+    try:
+        result = urlretrieve(url, output)
+        print(f"Downloaded: {output}")
+        return (True, output)
+    except Exception as e:
+        print(f"Failed to download {output}: {e}")
+        return (False, output)
 
 def main():
     if len(argv) != 5:
@@ -50,10 +56,15 @@ def main():
 
         tiles_to_download = []
         for xtile in range(min_xtile, max_xtile + 1):
-                    for ytile in range(min_ytile, max_ytile + 1):
-                        tiles_to_download.append((xtile, ytile, current_zoom))
+            for ytile in range(min_ytile, max_ytile + 1):
+                tiles_to_download.append((xtile, ytile, current_zoom))
 
-        Pool(8).map(download_tile, tiles_to_download)
+        print(f"Downloading {len(tiles_to_download)} tiles for zoom level {current_zoom}")
+        with Pool(8) as pool:
+            results = pool.map(download_tile, tiles_to_download)
+
+        successful = sum(1 for success, _ in results if success)
+        print(f"Completed zoom level {current_zoom}: {successful}/{len(tiles_to_download)} tiles downloaded")
 
     config = str([{"latitudeNorth":north_lat,"latitudeSouth":south_lat,"longitudeEast":east_long,"longitudeWest":west_long,"maxZoom":17,"minZoom":1,"name":"abc","timestamp":1726856188740}]).replace("'", '"')
     with open("config.json", "w") as f:
